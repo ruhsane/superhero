@@ -125,6 +125,7 @@ class Team:
 
     def view_all_heroes(self):
         """Print out all heroes to the console."""
+        print("List of heroes in the team: ")
         for hero in self.heroes:
             print(hero.name)
 
@@ -187,8 +188,9 @@ class Team:
 
         This data must be output to the terminal.
         """
+
         for hero in self.heroes:
-            print("{}{}/{}".format(hero.name, self.kills, self.deaths))
+            print("{}:{}/{}".format(hero.name, hero.kills, hero.deaths))
 
     # def update_kills(self):
     #     """
@@ -220,37 +222,120 @@ class Armor:
         """
         return random.randint(0, self.defense)
 
+
+#Implement the above methods. Use your favorite loops with the input() function to build teams based on user input.
+class Arena:
+    def __init__(self, team_one=Team(input("Team one name? ")), team_two= Team(input("Team two name? ")) ):
+        """
+        Declare variables
+        """
+        self.team_one = team_one
+        self.team_two = team_two
+
+
+    def add_new_ability(self, hero):
+        continue_adding = True
+
+        while continue_adding == True:
+
+            ability1 = input("Enter an ability name to add to your hero: ")
+            hero = Hero(hero)
+            hero.add_ability(ability1)
+            continue_adding_or_no = input("Do you want to add more abilities to your hero? (enter Yes or No): ")
+
+            if continue_adding_or_no.upper() == "YES":
+                continue_adding = True
+            elif continue_adding_or_no.upper() == "NO":
+                continue_adding = False
+            # else:
+            #     continue_adding_or_no = input("Please enter yes or no: ")
+            #     return add_new_ability
+
+    def build_team_one(self):
+        """
+        This method should allow a user to build team one.
+        """
+        continue_adding = True
+
+        while continue_adding == True:
+            #add new hero
+            hero = Hero(input("Enter a hero name to add to Team 1: "))
+            self.team_one.add_hero(hero)
+            self.team_one.view_all_heroes()
+
+            #add ability
+            self.add_new_ability(hero)
+
+            #ask for more hero
+            continue_adding_or_no = input("Do you want to add more heroes? (enter Yes or No): ")
+
+            if continue_adding_or_no.upper() == "YES":
+                continue_adding = True
+            elif continue_adding_or_no.upper() == "NO":
+                continue_adding = False
+
+    def build_team_two(self):
+        """
+        This method should allow user to build team two.
+        """
+        #add new hero
+        hero = Hero(input("Enter a hero name to add to Team 2: "))
+        # hero.name = input("Enter a hero name to add to Team 2: ")
+        self.team_two.add_hero(hero)
+        self.team_two.view_all_heroes()
+
+        #add ability
+        self.add_new_ability(hero)
+
+        #ask for more hero
+        continue_adding_or_no = input("Do you want to add more heroes? (enter Yes or No): ")
+
+        if continue_adding_or_no.upper() == "YES":
+            continue_adding = True
+        elif continue_adding_or_no.upper() == "NO":
+            continue_adding = False
+
+    def team_battle(self):
+        """
+        This method should continue to battle teams until
+        one or both teams are dead.
+        """
+        battle = True
+
+        if self.team_one.deal_damage == len(self.team_one.heroes) or self.team_two.deal_damage == len(self.team_one.heroes):
+            battle = False
+
+    def show_stats(self):
+        """
+        This method should print out the battle statistics
+        including each heroes kill/death ratio.
+        """
+        print("Team One Stats:")
+        print(self.team_one.stats())
+        print("Team Two Stats:")
+        print(self.team_two.stats())
+
 if __name__ == "__main__":
-    # If you run this file from the terminal this block is executed.
+    game_is_running = True
 
-    # tele = Ability("ruru", 5)
-    # gg = Ability("fast", 10)
-    # flash = Ability("flash", 4)
+    # Instantiate Game Arena
+    arena = Arena()
 
-    hero = Hero("Ruxxxxaaanaaa")
-    jinx = Hero("Jinx")
+    #Build Teams
+    arena.build_team_one()
+    arena.build_team_two()
 
-    gloves = Armor("gloves", 10)
+    while game_is_running:
 
-    gloves.defend()
+        arena.team_battle()
+        arena.show_stats()
+        play_again = input("Play Again? Y or N: ")
 
-    jinx.add_armor(gloves)
+        #Check for Player Input
+        if play_again.lower() == "n":
+            game_is_running = False
 
-    blue = Team("blue")
-    #
-    blue.add_hero(hero)
-    blue.add_hero(jinx)
-
-    # jinx.add_ability(tele)
-    # jinx.add_ability(gg)
-    # jinx.add_ability(flash)
-
-    #
-    # hero.add_ability(tele)
-    # hero.add_ability(gg)
-    # hero.attack()
-
-    # blue.view_all_heroes()
-    # gun = Weapon("gun", 200)
-    # gun.attack()
-    blue.find_hero("Jinx")
+        else:
+            #Revive heroes to play again
+            arena.team_one.revive_heroes()
+            arena.team_two.revive_heroes()
